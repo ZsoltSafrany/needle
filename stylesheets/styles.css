@@ -26,6 +26,8 @@ h1 {
 
 h2 {
   color:#393939;
+  font-size:18px;
+  text-decoration: underline;
 }
 
 h3, h4, h5, h6 {
