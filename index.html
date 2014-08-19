@@ -88,9 +88,19 @@
 <span class="o">});</span>
 </pre></div>
 
-<p>Subsequent executors obtained with <code>Needle.onBackgroundThread().withThreadPoolSize(poolSize)</code> with the same <code>poolSize</code> parameter will use the same thread pool.</p>
+<p>Subsequent executors obtained with </p>
 
-<p><code>Needle.onBackgroundThread()</code> is equivalent to <code>Needle.onBackgroundThread().withThreadPoolSize(Needle.DEFAULT_POOL_SIZE)</code>.</p>
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">()</span>
+      <span class="o">.</span><span class="na">withThreadPoolSize</span><span class="o">(</span><span class="n">poolSize</span><span class="o">)</span>
+</pre></div>
+
+<p>with the same <code>poolSize</code> parameter will use the same thread pool.</p>
+
+<p><code>Needle.onBackgroundThread()</code> is equivalent to </p>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">()</span>
+      <span class="o">.</span><span class="na">withThreadPoolSize</span><span class="o">(</span><span class="n">Needle</span><span class="o">.</span><span class="na">DEFAULT_POOL_SIZE</span><span class="o">)</span>
+</pre></div>
 
 <h2>
 <a name="do-work-on-a-background-thread-serially" class="anchor" href="#do-work-on-a-background-thread-serially"><span class="octicon octicon-link"></span></a>Do work on a background thread serially</h2>
@@ -103,7 +113,11 @@
 <span class="o">});</span>
 </pre></div>
 
-<p><code>Needle.onBackgroundThread().serially()</code> is equivalent to <code>Needle.onBackgroundThread().withThreadPoolSize(1)</code>.</p>
+<p><code>Needle.onBackgroundThread().serially()</code> is equivalent to</p>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">()</span>
+      <span class="o">.</span><span class="na">withThreadPoolSize</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+</pre></div>
 
 <h2>
 <a name="set-different-levels-of-concurrency-for-different-task-types" class="anchor" href="#set-different-levels-of-concurrency-for-different-task-types"><span class="octicon octicon-link"></span></a>Set different levels of concurrency for different task types</h2>
@@ -159,11 +173,37 @@
 
 <p>Tasks with different types will be executed independently from each other, i.e. each task type will have its own, separated thread pool.</p>
 
-<p>To be more precise, in case of these two calls <code>Needle.onBackgroundThread().withThreadPoolSize(poolSizeA).withTaskType(taskTypeA).execute(runnableA)</code> and <code>Needle.onBackgroundThread().withThreadPoolSize(poolSizeB).withTaskType(taskTypeB).execute(runnableB)</code> the tasks <code>runnableA</code> and <code>runnableB</code> will be executed in the same thread pool if, and only if, <code>poolSizeA</code> equals <code>poolSizeB</code> and <code>taskTypeA</code> equals <code>taskTypeB</code>.</p>
+<p>To be more precise, in case of these two calls </p>
 
-<p><code>Needle.onBackgroundThread().withTaskType(taskType)</code> is equivalent to <code>Needle.onBackgroundThread().withTaskType(taskType).withThreadPoolSize(Needle.DEFAULT_POOL_SIZE)</code>.</p>
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">()</span>
+      <span class="o">.</span><span class="na">withThreadPoolSize</span><span class="o">(</span><span class="n">poolSizeA</span><span class="o">)</span>
+      <span class="o">.</span><span class="na">withTaskType</span><span class="o">(</span><span class="n">taskTypeA</span><span class="o">)</span>
+      <span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">runnableA</span><span class="o">)</span>
+</pre></div>
 
-<p><code>Needle.onBackgroundThread().withThreadPoolSize(poolSize)</code> is equivalent to <code>Needle.onBackgroundThread().withTaskType(Needle.DEFAULT_TASK_TYPE).withThreadPoolSize(poolSize)</code>.</p>
+<p>and </p>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">()</span>
+      <span class="o">.</span><span class="na">withThreadPoolSize</span><span class="o">(</span><span class="n">poolSizeB</span><span class="o">)</span>
+      <span class="o">.</span><span class="na">withTaskType</span><span class="o">(</span><span class="n">taskTypeB</span><span class="o">)</span>
+      <span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">runnableB</span><span class="o">)</span>
+</pre></div>
+
+<p>tasks <code>runnableA</code> and <code>runnableB</code> will be executed in the same thread pool if, and only if, <code>poolSizeA</code> equals <code>poolSizeB</code> and <code>taskTypeA</code> equals <code>taskTypeB</code>.</p>
+
+<p><code>Needle.onBackgroundThread().withTaskType(taskType)</code> is equivalent to </p>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">()</span>
+      <span class="o">.</span><span class="na">withTaskType</span><span class="o">(</span><span class="n">taskType</span><span class="o">)</span>
+      <span class="o">.</span><span class="na">withThreadPoolSize</span><span class="o">(</span><span class="n">Needle</span><span class="o">.</span><span class="na">DEFAULT_POOL_SIZE</span><span class="o">)</span>
+</pre></div>
+
+<p><code>Needle.onBackgroundThread().withThreadPoolSize(poolSize)</code> is equivalent to </p>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">()</span>
+      <span class="o">.</span><span class="na">withTaskType</span><span class="o">(</span><span class="n">Needle</span><span class="o">.</span><span class="na">DEFAULT_TASK_TYPE</span><span class="o">)</span>
+      <span class="o">.</span><span class="na">withThreadPoolSize</span><span class="o">(</span><span class="n">poolSize</span><span class="o">)</span>
+</pre></div>
 
 <h2>
 <a name="calculate-something-on-a-background-thread-and-then-use-the-result-on-the-uimain-thread" class="anchor" href="#calculate-something-on-a-background-thread-and-then-use-the-result-on-the-uimain-thread"><span class="octicon octicon-link"></span></a>Calculate something on a background thread and then use the result on the UI/main thread</h2>
