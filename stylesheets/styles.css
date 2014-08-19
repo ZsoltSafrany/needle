@@ -65,6 +65,15 @@ code, pre {
   font-size:12px;
 }
 
+code {
+  margin-left: 1px;
+  margin-right: 1px;
+  background: #f8f8f8;  
+  padding:1px 2px;
+  border:1px solid #e5e5e5;
+  border-radius:2px;
+}
+
 pre {
   padding:8px 15px;
   background: #f8f8f8;  
