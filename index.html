@@ -1,0 +1,320 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Needle by ZsoltSafrany</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Needle</h1>
+        <p>Multithreading library for Android.</p>
+
+        <p class="view"><a href="https://github.com/ZsoltSafrany/needle">View the Project on GitHub <small>ZsoltSafrany/needle</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/ZsoltSafrany/needle/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/ZsoltSafrany/needle/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/ZsoltSafrany/needle">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h1>
+
+<p>Needle makes multithreading simple on Android. </p>
+
+<p>Are you struggling with <code>Thread</code>, <code>Handler</code>, <code>Looper</code>, <code>AsyncTask</code>, <code>ThreadPoolExecutor</code>, <code>FutureTask</code>, <code>View.post()</code> or <code>Activity.runOnUiThread()</code>?</p>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onMainThread</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="nf">Runnable</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// e.g. change one of the views</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>You might be better off using <code>Needle</code>. </p>
+
+<p>Needle supports Android 1.5 (API Level 3) and above; and it behaves the same on all platform versions.</p>
+
+<h1>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h1>
+
+<h2>
+<a name="do-work-on-the-uimain-thread" class="anchor" href="#do-work-on-the-uimain-thread"><span class="octicon octicon-link"></span></a>Do work on the UI/main thread</h2>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onMainThread</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="nf">Runnable</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// e.g. change one of the views</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<h2>
+<a name="do-work-on-a-background-thread" class="anchor" href="#do-work-on-a-background-thread"><span class="octicon octicon-link"></span></a>Do work on a background thread</h2>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="nf">Runnable</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// something cpu-intensive and/or not UI-related</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>The executor returned by <code>onBackgroundThread()</code> has a thread pool with 3 (<code>Needle.DEFAULT_POOL_SIZE</code>) threads. If all threads in the pool are busy executing code then <code>Runnable</code> instances are enqueued and executed as soon as possible.</p>
+
+<p>This way you can make sure you never bog down the CPU with a lot of concurrent threads; number of concurrent threads is bounded.</p>
+
+<h2>
+<a name="do-work-on-a-background-thread-with-custom-thread-pool-size" class="anchor" href="#do-work-on-a-background-thread-with-custom-thread-pool-size"><span class="octicon octicon-link"></span></a>Do work on a background thread with custom thread pool size</h2>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">().</span><span class="na">withThreadPoolSize</span><span class="o">(</span><span class="mi">6</span><span class="o">).</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="nf">Runnable</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// something that blocks often thus can have a larger thread pool,</span>
+        <span class="c1">// for instance, downloading a file (with blocking IO)</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>Subsequent executors obtained with <code>Needle.onBackgroundThread().withThreadPoolSize(poolSize)</code> with the same <code>poolSize</code> parameter will use the same thread pool.</p>
+
+<p><code>Needle.onBackgroundThread()</code> is equivalent to <code>Needle.onBackgroundThread().withThreadPoolSize(Needle.DEFAULT_POOL_SIZE)</code>.</p>
+
+<h2>
+<a name="do-work-on-a-background-thread-serially" class="anchor" href="#do-work-on-a-background-thread-serially"><span class="octicon octicon-link"></span></a>Do work on a background thread serially</h2>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">().</span><span class="na">serially</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="nf">Runnable</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// something that we want to do serially but not on the main thread</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p><code>Needle.onBackgroundThread().serially()</code> is equivalent to <code>Needle.onBackgroundThread().withThreadPoolSize(1)</code>.</p>
+
+<h2>
+<a name="set-different-levels-of-concurrency-for-different-task-types" class="anchor" href="#set-different-levels-of-concurrency-for-different-task-types"><span class="octicon octicon-link"></span></a>Set different levels of concurrency for different task types</h2>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span>
+    <span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">withTaskType</span><span class="o">(</span><span class="s">"file-downloading"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="nf">Runnable</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+            <span class="c1">// downloading a file in a thread pool </span>
+            <span class="c1">// different from thread pool of "image-processing"</span>
+        <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="n">Needle</span>
+    <span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">withTaskType</span><span class="o">(</span><span class="s">"image-processing"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="nf">Runnable</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+            <span class="c1">// processing an image in a thread pool </span>
+            <span class="c1">// different from thread pool of "file-downloading"</span>
+        <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span>
+    <span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">withTaskType</span><span class="o">(</span><span class="s">"cpu-inensive-but-has-to-be-serial"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">withThreadPoolSize</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="nf">Runnable</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+            <span class="c1">// something that we want to do serially but not on the main thread</span>
+        <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="n">Needle</span>
+    <span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">withTaskType</span><span class="o">(</span><span class="s">"something-else-that-has-to-be-serial"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">serially</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="nf">Runnable</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+            <span class="c1">// something else that we want to do serially </span>
+            <span class="c1">// and also not on the main thread</span>
+            <span class="c1">// and should not interfere with </span>
+            <span class="c1">// "cpu-inensive-but-has-to-be-serial" tasks</span>
+        <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>Tasks with different types will be executed independently from each other, i.e. each task type will have its own, separated thread pool.</p>
+
+<p>To be more precise, in case of these two calls <code>Needle.onBackgroundThread().withThreadPoolSize(poolSizeA).withTaskType(taskTypeA).execute(runnableA)</code> and <code>Needle.onBackgroundThread().withThreadPoolSize(poolSizeB).withTaskType(taskTypeB).execute(runnableB)</code> the tasks <code>runnableA</code> and <code>runnableB</code> will be executed in the same thread pool if, and only if, <code>poolSizeA</code> equals <code>poolSizeB</code> and <code>taskTypeA</code> equals <code>taskTypeB</code>.</p>
+
+<p><code>Needle.onBackgroundThread().withTaskType(taskType)</code> is equivalent to <code>Needle.onBackgroundThread().withTaskType(taskType).withThreadPoolSize(Needle.DEFAULT_POOL_SIZE)</code>.</p>
+
+<p><code>Needle.onBackgroundThread().withThreadPoolSize(poolSize)</code> is equivalent to <code>Needle.onBackgroundThread().withTaskType(Needle.DEFAULT_TASK_TYPE).withThreadPoolSize(poolSize)</code>.</p>
+
+<h2>
+<a name="calculate-something-on-a-background-thread-and-then-use-the-result-on-the-uimain-thread" class="anchor" href="#calculate-something-on-a-background-thread-and-then-use-the-result-on-the-uimain-thread"><span class="octicon octicon-link"></span></a>Calculate something on a background thread and then use the result on the UI/main thread</h2>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="n">UiRelatedTask</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="n">Integer</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">thenDoUiRelatedWork</span><span class="o">(</span><span class="n">Integer</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">mSomeTextView</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">"result: "</span> <span class="o">+</span> <span class="n">result</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>Callback <code>thenDoUiRelatedWork(Result result)</code> is executed on the UI/main thread.</p>
+
+<h2>
+<a name="calculate-something-and-publish-progress-updates-on-a-background-thread-and-then-use-the-result-on-the-uimain-thread" class="anchor" href="#calculate-something-and-publish-progress-updates-on-a-background-thread-and-then-use-the-result-on-the-uimain-thread"><span class="octicon octicon-link"></span></a>Calculate something and publish progress updates on a background thread and then use the result on the UI/main thread</h2>
+
+<div class="highlight highlight-java"><pre><span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="n">UiRelatedProgressTask</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="n">String</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span>
+            <span class="n">publishProgress</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="s">"The result is: "</span> <span class="o">+</span> <span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">thenDoUiRelatedWork</span><span class="o">(</span><span class="n">String</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">mSomeTextView</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onProgressUpdate</span><span class="o">(</span><span class="n">Integer</span> <span class="n">progress</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">mSomeTextView</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">"progress: "</span> <span class="o">+</span> <span class="n">progress</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">});</span>             
+</pre></div>
+
+<p>Both <code>thenDoUiRelatedWork(Result result)</code> and <code>onProgressUpdate(Progress progress)</code> are executed on the UI/main thread.</p>
+
+<h2>
+<a name="cancel-tasks" class="anchor" href="#cancel-tasks"><span class="octicon octicon-link"></span></a>Cancel tasks</h2>
+
+<div class="highlight highlight-java"><pre><span class="n">CancelableTask</span> <span class="n">task</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">CancelableTask</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// will be never executed</span>
+    <span class="o">}</span>
+<span class="o">};</span>
+<span class="n">task</span><span class="o">.</span><span class="na">cancel</span><span class="o">();</span>
+<span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="n">task</span><span class="o">);</span>
+</pre></div>
+
+<p>Passing a task to <code>.execute()</code> that is not canceled doesn't necessarily mean that it will be executed. If the task gets canceled while it is waiting it the thread pool queue (because all threads are busy to process it) then it won't be executed either (ever).  </p>
+
+<div class="highlight highlight-java"><pre><span class="n">CancelableTask</span> <span class="n">task</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">CancelableTask</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">lotOfIterations</span> <span class="o">=</span> <span class="o">...;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">lotOfIterations</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">isCanceled</span><span class="o">())</span> <span class="o">{</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="c1">// work on current iteration</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">};</span>
+
+<span class="n">Needle</span><span class="o">.</span><span class="na">onBackgroundThread</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="n">task</span><span class="o">);</span>
+<span class="c1">// a little time goes by</span>
+<span class="n">task</span><span class="o">.</span><span class="na">cancel</span><span class="o">();</span>
+</pre></div>
+
+<p>In case your task takes a very long time to execute you may want to check inside <code>doWork()</code> whether the task has been canceled - to stop execution.</p>
+
+<p>Classes <code>CancelableTask</code>, <code>UiRelatedTask</code> and <code>UiRelatedProgressTask</code> are all cancelable.</p>
+
+<h1>
+<a name="download" class="anchor" href="#download"><span class="octicon octicon-link"></span></a>Download</h1>
+
+<p><a href="http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.zsoltsafrany&amp;a=needle&amp;v=LATEST">↓ Latest JAR</a></p>
+
+<p>The source code of Needle is <a href="https://github.com/ZsoltSafrany/needle">available on GitHub</a>.</p>
+
+<h2>
+<a name="maven" class="anchor" href="#maven"><span class="octicon octicon-link"></span></a>Maven</h2>
+
+<div class="highlight highlight-xml"><pre><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.zsoltsafrany<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>needle<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+<h2>
+<a name="gradle" class="anchor" href="#gradle"><span class="octicon octicon-link"></span></a>Gradle</h2>
+
+<div class="highlight highlight-Groovy"><pre><span class="n">compile</span> <span class="s1">'com.zsoltsafrany:needle:1.0.0'</span>
+</pre></div>
+
+<h1>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h1>
+
+<pre><code>The MIT License (MIT)
+
+Copyright (c) 2014 Zsolt Safrany
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/ZsoltSafrany">ZsoltSafrany</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-53950173-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
