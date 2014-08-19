@@ -10,7 +10,7 @@
 
     <groupId>com.zsoltsafrany</groupId>
     <artifactId>needle</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>Needle</name>
     <description>Multithreading library for Android.</description>
@@ -36,7 +36,7 @@
         <url>http://github.com/ZsoltSafrany/needle</url>
         <connection>scm:git:git://github.com/ZsoltSafrany/needle.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/ZsoltSafrany/needle.git</developerConnection>
-        <tag>needle-1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
