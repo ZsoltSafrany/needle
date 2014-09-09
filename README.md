@@ -11,7 +11,7 @@ Needle.onMainThread().execute(new Runnable() {
     }
 });
 ```
-For documentation and additional information see the [the website][1].
+For documentation and additional information see [the website][1].
 
 
 Download
